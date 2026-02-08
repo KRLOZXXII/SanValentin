@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>💘 Invitación 💘</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family: Arial, sans-serif;
+}
+
+body{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background: linear-gradient(120deg, #ff4d6d, #ff9aa2, #ffffff);
+    background-size:400% 400%;
+    animation:fondo 10s ease infinite;
+}
+
+@keyframes fondo{
+    0%{background-position:0% 50%}
+    50%{background-position:100% 50%}
+    100%{background-position:0% 50%}
+}
+
+.box{
+    background: rgba(255,255,255,0.25);
+    backdrop-filter: blur(15px);
+    border-radius:30px;
+    padding:30px 25px 50px;
+    text-align:center;
+    width:90%;
+    max-width:420px;
+    box-shadow:0 10px 25px rgba(0,0,0,0.25);
+}
+
+h1{ margin-bottom:15px; }
+
+.gif{
+    width:180px;
+    max-width:70%;
+    border-radius:20px;
+    margin:15px 0;
+}
+
+/* CONTENEDOR BOTONES */
+#botones{
+    margin-top:20px;
+    position:relative;
+    height:120px;
+}
+
+/* BOTONES */
+#botones button{
+    padding:12px 32px;
+    border:none;
+    border-radius:25px;
+    cursor:pointer;
+    font-size:16px;
+    transition:transform 0.25s ease;
+    position:absolute;
+    left:50%;
+    transform:translateX(-50%) scale(1);
+}
+
+/* SI ARRIBA */
+#si{
+    background:black;
+    color:white;
+    z-index:2;
+    top:0;
+}
+
+/* NO ABAJO */
+#no{
+    background:white;
+    color:black;
+    z-index:1;
+    top:55px;
+}
+
+#textoSeguro{
+    font-size:12px;
+    margin-top:10px;
+}
+
+#textoSeguro a{
+    color:black;
+    cursor:pointer;
+    text-decoration:underline;
+}
+
+#rechazo{
+    display:none;
+    margin-top:15px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="box">
+    <h1>👑Hola Reyna ¿Quieres ser mi San Valentín? 💖</h1>
+
+    <img id="gifInicial" class="gif"
+    src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExY2syZnI5azQxazkwbGRhOXc0NG1wamF2bGp0azY5azlqdjUyOTdqbyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/naNXT1KRfswFy/giphy.gif">
+
+    <div id="botones">
+        <button id="si" onclick="acepto()">Sí 💘</button>
+        <button id="no" onclick="presionarNo()">No 💔</button>
+    </div>
+
+    <div id="textoSeguro">
+        <span>Estoy segura; </span>
+        <a onclick="noAcepto()">No quiero</a>
+    </div>
+
+    <div id="rechazo">
+        <p>Gracias por tu sinceridad</p>
+        <img class="gif"
+        src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExb3d2MDd4cDMzbDRxcHd0dnlrMG9rNzdndGhxOW9xcjNzNnkzdXNqeCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/qQdL532ZANbjy/giphy.gif">
+    </div>
+</div>
+
+<script>
+let escalaNo = 1;
+let escalaSi = 1;
+let clicksNo = 0;
+
+/* GIFS TRISTES */
+const gifsTristes = [
+ "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExY2syZnI5azQxazkwbGRhOXc0NG1wamF2bGp0azY5azlqdjUyOTdqbyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/Lv2VhwHrt6ljhvZ6LF/giphy.gif",
+ "https://media.giphy.com/media/3oriO6qJiXajN0TyDu/giphy.gif",
+ "https://media.giphy.com/media/26ufcVAp3AiJJsrIs/giphy.gif",
+ "https://media.giphy.com/media/ROF8OQvDmxytW/giphy.gif",
+ "https://media.giphy.com/media/OPU6wzx8JrHna/giphy.gif",
+ "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNzkzMHA1d2Nwd2V1cDF5d2d6dzh6NzVlc2EycXl4YWUxNG04ZnE4dyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/4V3RuU0zSq1SC8Hh4x/giphy.gif",
+ "https://media.giphy.com/media/ISOckXUybVfQ4/giphy.gif",
+ "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNzkzMHA1d2Nwd2V1cDF5d2d6dzh6NzVlc2EycXl4YWUxNG04ZnE4dyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/lR3pWtb80Hz22UjrYj/giphy.gif",
+ "https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3M3l2ZXM5cDJlZjE3czc2bHBqbjA4dzRtNzd5ZDV4b3hzbzl0M3VtZCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/XYEEvoX0Ub69ZgN9ai/giphy.gif",
+ "https://media.giphy.com/media/9Y5BbDSkSTiY8/giphy.gif",
+ "https://media.giphy.com/media/2rtQMJvhzOnRe/giphy.gif",
+ "https://media.giphy.com/media/l1J9EdzfOSgfyueLm/giphy.gif"
+];
+
+/* ❌ BOTÓN NO (solo animación, NO envía correo) */ 8
+function presionarNo(){
+    if(clicksNo < 12){
+        clicksNo++;
+
+        escalaNo -= 0.08;
+        if(escalaNo < 0.25) escalaNo = 0.25;
+
+        escalaSi += 0.12;
+
+        document.getElementById("no").style.transform =
+        `translateX(-50%) scale(${escalaNo})`;
+
+        document.getElementById("si").style.transform =
+        `translateX(-50%) scale(${escalaSi})`;
+
+        document.getElementById("gifInicial").src =
+        gifsTristes[clicksNo - 1];
+    }
+}
+
+/* 📩 ENVÍO DE CORREO SOLO AQUÍ */
+function enviarAviso(){
+    fetch("https://formspree.io/f/xnjbqwaq", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            respuesta: "No quiso aceptar la invitación",
+            pagina: "index.html",
+            fecha: new Date().toLocaleString()
+        })
+    });
+}
+
+/* ❌❌ NO QUIERO (RECHAZO DEFINITIVO → SÍ ENVÍA CORREO) */
+function noAcepto(){
+    localStorage.setItem("respuestaSanValentin", "no");
+
+    enviarAviso();
+
+    history.replaceState(null, "", location.href);
+
+    document.getElementById("gifInicial").style.display = "none";
+    document.getElementById("botones").style.display = "none";
+    document.getElementById("textoSeguro").style.display = "none";
+    document.getElementById("rechazo").style.display = "block";
+}
+
+/* ✅ SÍ */
+function acepto(){
+    localStorage.setItem("respuestaSanValentin", "si");
+    window.location.href = "si.html";
+}
+</script>
+
+</body>
+</html>
